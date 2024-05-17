@@ -9,7 +9,8 @@ val config = Seq(
 
 val utils = Seq(
   "dev.zio" %% "zio-logging" % zioLoggingVersion,
-  "dev.zio" %% "zio-logging-slf4j" % zioLoggingVersion
+  "dev.zio" %% "zio-logging-slf4j" % zioLoggingVersion,
+  "com.github.jwt-scala" %% "jwt-core"  % "9.1.1"
 )
 
 

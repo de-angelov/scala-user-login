@@ -19,3 +19,4 @@ case class Endpoints private (
 object Endpoints {
   val live = ZLayer.derive[Endpoints]
 }
+
