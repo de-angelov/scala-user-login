@@ -2,6 +2,7 @@ package userlogin.api
 
 import userlogin.db.{RepositoryService}
 import userlogin.types.{UserPassword}
+import userlogin.helpers.{jwtEncode}
 
 import zio.*
 import zio.http.*
@@ -11,21 +12,52 @@ import scala.util.chaining.scalaUtilChainingOps
 
 case class ApiEndpoints private (dbr: RepositoryService) {
 
+private val extractField
+  : ( ZIO[Any, Response, Form], String) => ZIO[Any, Response, String]
+  = (form, fieldName) =>
+    for {
+      fieldOpt
+        <- form
+        .map(_.get(fieldName))
+        .flatMap(ZIO.fromOption)
+        .orElseFail(Response.badRequest(s"Missing $fieldName field!"))
+
+      fieldValue
+        <- fieldOpt
+        .stringValue
+        .pipe(ZIO.fromOption)
+        .orElseFail(Response.badRequest(s"Missing $fieldName value!"))
+
+    } yield fieldValue
+
+
+
+
   private val register
     = Method.POST / "api" / "register" -> handler {
     (req: Request) =>
 
     val form = req.body.asMultipartForm.orElseFail(Response.badRequest)
 
-
-    Response.text("handleRegister")
+    for {
+      username <- extractField(form, "username")
+      password <- extractField(form, "password")
+    } yield dbr.saveNewUser(username, UserPassword.apply(password)) match
+      case Some(value) => Response.text(jwtEncode(username, "TODO TOKEN"))
+      case None => Response.unauthorized("Invalid username or password.")
   }
 
   private val logout
     = Method.POST / "api" / "logout" -> handler {
     (req: Request) =>
+    val form = req.body.asMultipartForm.orElseFail(Response.badRequest)
 
-    Response.text("handleLogout")
+    for {
+      username <- extractField(form, "username")
+      password <- extractField(form, "password")
+    } yield dbr.saveNewUser(username, UserPassword.apply(password)) match
+      case Some(value) => Response.text(jwtEncode(username, "TODO TOKEN", -1))
+      case None => Response.unauthorized("Invalid username or password.")
   }
 
   private val login
@@ -36,17 +68,14 @@ case class ApiEndpoints private (dbr: RepositoryService) {
 
 
     val result = for {
-      username
-        <- form
-        .map(_.get("username"))
-        .flatMap(ff => ZIO.fromOption(ff).orElseFail(Response.badRequest("Missing username field!")))
-        .flatMap(ff => ZIO.fromOption(ff.stringValue).orElseFail(Response.badRequest("Missing username value!")))
+      username <- extractField(form, "username")
+      password <- extractField(form, "password")
 
-      password
-        <- form
-        .map(_.get("password"))
-        .flatMap(ff => ZIO.fromOption(ff).orElseFail(Response.badRequest("Missing password field!")))
-        .flatMap(ff => ZIO.fromOption(ff.stringValue).orElseFail(Response.badRequest("Missing password value!")))
+
+        // <- form
+        // .map(_.get("password"))
+        // .flatMap(ff => ZIO.fromOption(ff).orElseFail(Response.badRequest("Missing password field!")))
+        // .flatMap(ff => ZIO.fromOption(ff.stringValue).orElseFail(Response.badRequest("Missing password value!")))
 
       // password
       //   <- form
@@ -55,15 +84,30 @@ case class ApiEndpoints private (dbr: RepositoryService) {
       //   .map(ZIO.fromOption)
       //   .flatMap(_.orElseFail(Response.notFound))
 
-      user <-
-          dbr
-          .getUser(username, UserPassword.apply(password))
-          .pipe(ZIO.fromOption)
-          .orElseFail(Response.notFound)
+      // user <-
+      //     dbr
+      //     .getUser(username, UserPassword.apply(password))
+          // .pipe(ZIO.fromOption)
+          // .orElseFail(Response.notFound)
 
-     } yield  user
+      //  } yield dbr.getUser(username, UserPassword.apply(password)) match {
+      //    case Some(_) => Response.text(jwtEncode(username, ""))
+      //    case None => Response.unauthorized("Invalid username or password.")
+      //  }
 
-     result
+      userOpt
+        <- dbr
+        .getUser(username, UserPassword.apply(password))
+        .pipe(ZIO.succeed)
+
+      finalResult <- userOpt match {
+        case Some(_) => ZIO.succeed(Response.text(jwtEncode(username, "TODO TOKEN")))
+        case None => ZIO.fail(Response.unauthorized("Invalid username or password."))
+      }
+
+    } yield finalResult
+
+    result
   }
 
 

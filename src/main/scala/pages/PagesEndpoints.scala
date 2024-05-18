@@ -6,19 +6,18 @@ import zio.http.*
 
 case class PagesEndpoints private() {
 
-    val LoginPage = ???
+    val loginPage = Method.GET / "login" -> handler(renderLoginPage)
 
-    val SecretPage = ???
+    val secretPage = Method.GET / "secret" -> handler(renderSecretPage)
 
-    val HomePage = ???
+    val homePage = Method.GET / "" -> handler(renderHomePage)
 
     def endpoints
     : Routes[Any, Response]
     = Routes(
-      HomePage,
-      LoginPage,
-      SecretPage,
-      Method.GET / "" -> handler(Response.text("Hello World")),
+      homePage,
+      secretPage,
+      loginPage,
     )
 }
 

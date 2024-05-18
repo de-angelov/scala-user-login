@@ -13,27 +13,20 @@ val utils = Seq(
   "com.github.jwt-scala" %% "jwt-core"  % "9.1.1"
 )
 
-
-val html = Seq(
-  "com.lihaoyi" %% "scalatags" % "0.12.0"
-)
-
-
 val http = Seq(
-  "dev.zio" %% "zio-http" % "3.0.0-RC4"
+  "dev.zio" %% "zio-http" % "3.0.0-RC6"
 )
 
-lazy val root = project
-  .in(file("."))
-  .settings(
+lazy val rootProject = (project in file(".")).settings(
+  Seq(
     name := "scala-user-login",
     version := "0.1.0-SNAPSHOT",
+    organization := "de-angelov",
+    scalaVersion := scala3Version,
     scalacOptions ++= Seq(
       "-Xmax-inlines",
       "64"
     ),
-
-    scalaVersion := scala3Version,
-
-    libraryDependencies ++=  html ++ http ++ config ++ utils
+    libraryDependencies ++= config ++ utils ++ http
   )
+)
