@@ -27,41 +27,43 @@ def jwtDecode
     , Seq(JwtAlgorithm.HS512)
     )
 
-  def bearerAuthWithContext
-    (secretKey: String): HandlerAspect[Any, String]
-    =
-        val handleToken
-          = (request: Request)
-          => (token: String)
-          =>
-          jwtDecode(token, secretKey)
-            .pipe(ZIO.fromTry)
-            .orElseFail(Response.badRequest("Invalid or expired token!"))
-            .flatMap(
-              _
-              .subject
-              .pipe(ZIO.fromOption)
-              .orElseFail(Response.badRequest("Missing subject claim!"))
-              .map(u => (request, u))
-            )
+def bearerAuthWithContext
+  (secretKey: String): HandlerAspect[Any, String]
+  =
+      val handleToken
+        = (request: Request)
+        => (token: String)
+        =>
+        jwtDecode(token, secretKey)
+          .pipe(ZIO.fromTry)
+          .orElseFail(Response.badRequest("Invalid or expired token!"))
+          .flatMap(
+            _
+            .subject
+            .pipe(ZIO.fromOption)
+            .orElseFail(Response.badRequest("Missing subject claim!"))
+            .map(u => (request, u))
+          )
 
-        val handleNoToken
-            = { val header = Header.WWWAuthenticate.Bearer(realm = "Access")
-            Response
-            .unauthorized
-            .addHeader(header)
-            .pipe(ZIO.fail)
-            }
+      val handleNoToken
+          = { val header = Header.WWWAuthenticate.Bearer(realm = "Access")
+          Response
+          .unauthorized
+          .addHeader(header)
+          .pipe(ZIO.fail)
+          }
 
-        val handleRequest
-          = (request: Request) =>
-          type Bearer = Header.Authorization.Bearer
+      val handleRequest
+        = (request: Request) =>
+        type Bearer = Header.Authorization.Bearer
 
-          request
-          .header(Header.Authorization) match
-            case Some(Bearer(token)) => handleToken(request)(token.value.toString)
-            case _ => handleNoToken
+        request
+        .header(Header.Authorization) match
+          case Some(Bearer(token)) => handleToken(request)(token.value.toString)
+          case _ => handleNoToken
 
-        Handler
-        .fromFunctionZIO[Request](handleRequest)
-        .pipe(HandlerAspect.interceptIncomingHandler)
+      Handler
+      .fromFunctionZIO[Request](handleRequest)
+      .pipe(HandlerAspect.interceptIncomingHandler)
+
+

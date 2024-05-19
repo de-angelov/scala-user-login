@@ -6,7 +6,7 @@ services:
     ports:
       - "80:8080"
     environment:
-      - POSTGRES_CONNECT_STRING=host=db port=5432 user=postgres password=postgres dbname=riocabal connect_timeout=10
+      - POSTGRES_CONNECT_STRING=host=db port=5432 user=postgres password=postgres dbname=zioscala connect_timeout=10
       - POSTGRES_POOL_SIZE=4
       - JWK_STRING=b3d3038c4f8c44589de316439d3d227c
     restart: on-failure
@@ -21,7 +21,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=riocabal
+      - POSTGRES_DB=zioscala
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - type: volume

@@ -1,4 +1,4 @@
-package userlogin.pages
+package userlogin.pages.home
 
 import zio._
 import zio.http._

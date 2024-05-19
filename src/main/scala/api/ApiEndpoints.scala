@@ -1,8 +1,9 @@
 package userlogin.api
 
 import userlogin.db.{RepositoryService}
-import userlogin.types.{UserPassword}
+import userlogin.types.{UserPassword, AppConfig}
 import userlogin.helpers.{jwtEncode}
+
 
 import zio.*
 import zio.http.*
@@ -10,7 +11,7 @@ import pdi.jwt.{Jwt, JwtAlgorithm, JwtClaim}
 
 import scala.util.chaining.scalaUtilChainingOps
 
-case class ApiEndpoints private (dbr: RepositoryService) {
+case class ApiEndpoints private (dbr: RepositoryService, config: AppConfig) {
 
 private val extractField
   : ( ZIO[Any, Response, Form], String) => ZIO[Any, Response, String]
@@ -43,7 +44,7 @@ private val extractField
       username <- extractField(form, "username")
       password <- extractField(form, "password")
     } yield dbr.saveNewUser(username, UserPassword.apply(password)) match
-      case Some(value) => Response.text(jwtEncode(username, "TODO TOKEN"))
+      case Some(value) => Response.text(jwtEncode(username, config.jwtString))
       case None => Response.unauthorized("Invalid username or password.")
   }
 
@@ -56,7 +57,7 @@ private val extractField
       username <- extractField(form, "username")
       password <- extractField(form, "password")
     } yield dbr.saveNewUser(username, UserPassword.apply(password)) match
-      case Some(value) => Response.text(jwtEncode(username, "TODO TOKEN", -1))
+      case Some(value) => Response.text(jwtEncode(username, config.jwtString, -1))
       case None => Response.unauthorized("Invalid username or password.")
   }
 
@@ -101,7 +102,7 @@ private val extractField
         .pipe(ZIO.succeed)
 
       finalResult <- userOpt match {
-        case Some(_) => ZIO.succeed(Response.text(jwtEncode(username, "TODO TOKEN")))
+        case Some(_) => ZIO.succeed(Response.text(jwtEncode(username, config.jwtString)))
         case None => ZIO.fail(Response.unauthorized("Invalid username or password."))
       }
 

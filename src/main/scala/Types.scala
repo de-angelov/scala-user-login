@@ -1,10 +1,10 @@
 package userlogin.types
 
 case class AppConfig
-  ( appPort: Int
-  , appDBPool: Any
+  ( dbConn: String
+  , dbPool: Int
+  , jwtString: String
   )
-// todo db pool
 
 opaque type UserPassword = String
 
