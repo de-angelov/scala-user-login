@@ -20,16 +20,17 @@
 	"customizations": {
 		// Configure properties specific to VS Code.
 		"vscode": {
-		 "extensions": [
-		  "scala-lang.scala",
-		  "scalameta.metals",
-		  "hbenl.vscode-test-explorer",
-		  "Anan.jetbrains-darcula-theme",
-		  "EditorConfig.EditorConfig"
-		 ],
-		 "settings": {
-		  "workbench.colorTheme": "JetBrains Darcula Theme"
-		 }
+      "extensions": [
+        "scala-lang.scala",
+        "scalameta.metals",
+        "hbenl.vscode-test-explorer",
+        "Anan.jetbrains-darcula-theme",
+        "EditorConfig.EditorConfig",
+        "oderwat.indent-rainbow"
+      ],
+      "settings": {
+        "workbench.colorTheme": "JetBrains Darcula Theme"
+      }
 		}
 	},
 	"portsAttributes": {

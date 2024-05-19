@@ -17,16 +17,30 @@ val http = Seq(
   "dev.zio" %% "zio-http" % "3.0.0-RC6"
 )
 
-lazy val rootProject = (project in file(".")).settings(
-  Seq(
-    name := "scala-user-login",
-    version := "0.1.0-SNAPSHOT",
-    organization := "de-angelov",
-    scalaVersion := scala3Version,
-    scalacOptions ++= Seq(
-      "-Xmax-inlines",
-      "64"
-    ),
-    libraryDependencies ++= config ++ utils ++ http
-  )
+val db = Seq(
+  "io.getquill" %% "quill-jdbc-zio" % "4.8.4",
+  "org.postgresql" %  "postgresql"  % "42.3.1",
+  "com.zaxxer" % "HikariCP" % "5.1.0"
+  // "org.postgresql" %% "postgresql" % "42.7.3",
+  // "org.flywaydb" %% "flyway-core" % "10.1.0",
 )
+
+lazy val rootProject
+  = (project in file("."))
+  .settings(
+    Seq(
+      name := "scala-user-login",
+      version := "0.1.0-SNAPSHOT",
+      organization := "de-angelov",
+      scalaVersion := scala3Version,
+      scalacOptions ++= Seq(
+        "-Xmax-inlines",
+        "64"
+      ),
+      libraryDependencies ++= config ++ utils ++ http ++ db
+    )
+  )
+
+
+
+
