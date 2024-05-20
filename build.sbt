@@ -1,4 +1,4 @@
-val scala3Version = "3.4.1"
+val scala3Version = "3.3.3"
 val zioConfigVersion = "4.0.0-RC16"
 val zioLoggingVersion = "2.1.16"
 
@@ -19,10 +19,9 @@ val http = Seq(
 
 val db = Seq(
   "io.getquill" %% "quill-jdbc-zio" % "4.8.4",
-  "org.postgresql" %  "postgresql"  % "42.3.1",
-  "com.zaxxer" % "HikariCP" % "5.1.0"
-  // "org.postgresql" %% "postgresql" % "42.7.3",
-  // "org.flywaydb" %% "flyway-core" % "10.1.0",
+  "org.postgresql" % "postgresql"  % "42.6.2",
+  "org.flywaydb" % "flyway-core" % "10.13.0",
+  "com.zaxxer" % "HikariCP" % "5.1.0",
 )
 
 lazy val rootProject

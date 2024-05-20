@@ -2,31 +2,29 @@ package userlogin.db
 
 import userlogin.types.{AppConfig}
 
+import io.getquill._
+import io.getquill.jdbczio.Quill
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
-import io.getquill.*
-import io.getquill.jbczio.*
 import javax.sql.DataSource
-import quill._
 import zio.{ZIO, ZLayer}
+import scala.util.chaining.scalaUtilChainingOps
 
 object DbService {
   private def create
     (config: AppConfig): HikariDataSource
     = {
       val poolConfig = new HikariConfig()
-      poolConfig.setJbcUrl(config.dbPool)
-      poolConfig.setJbcUrl(config.dbConn)
+      poolConfig.setJdbcUrl(config.dbConn)
 
       new HikariDataSource(poolConfig)
     }
 
   val dataSourceLive
-    : ZLayer[DbConfig, Nothing, DataSource]
+    : ZLayer[AppConfig, Nothing, DataSource]
     = ZLayer.scoped {
       ZIO.fromAutoCloseable {
         for {
-          dbConfig <- ZIO.service[AppConfig]
-          dataSource <- AppConfig.pipe(create).pipe(ZIO.succeed)
+          dataSource <- (ZIO.service[AppConfig]).map(create)
         } yield dataSource
       }
     }
