@@ -3,13 +3,14 @@ package userlogin
 import userlogin.api.{ApiEndpoints}
 import userlogin.pages.{PagesEndpoints}
 import userlogin.endpoints.{Endpoints}
-import userlogin.db.{RepositoryService, DbService}
+import userlogin.db.{RepositoryService, DbService, DbMigrator}
 import userlogin.types.{AppConfig}
 
 import zio.*
 import zio.http.*
 import zio.logging.LogFormat
 import zio.logging.backend.SLF4J
+import userlogin.db.DbMigrator
 
 private def getEnvVar
   [T](name: String, default: T)(implicit ev: String => T): T
@@ -32,6 +33,8 @@ object Main extends ZIOAppDefault {
 
       val program
         = for {
+          _ <- ZIO.service[DbMigrator].map(_.migrate())
+
           liftedApp <- app
           _ <- ZIO.logInfo("Starting..")
           _ <- Server.serve(liftedApp @@ Middleware.debug)
@@ -46,8 +49,9 @@ object Main extends ZIOAppDefault {
         RepositoryService.live,
         DbService.quillLive,
         DbService.dataSourceLive,
+        DbMigrator.live,
         ZLayer.succeed(appConfig),
-        Server.defaultWithPort(port)
+        Server.defaultWithPort(port),
       )
       .exitCode
 }

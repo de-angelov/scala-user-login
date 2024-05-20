@@ -13,6 +13,7 @@ class DbMigrator(ds: DataSource):
     (): Task[Unit]
     = Flyway
     .configure()
+    .locations("filesystem:./sql")
     .dataSource(ds)
     .load()
     .migrate()
