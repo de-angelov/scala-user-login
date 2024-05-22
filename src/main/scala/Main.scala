@@ -36,7 +36,7 @@ object Main extends ZIOAppDefault {
           _ <- ZIO.service[DbMigrator].map(_.migrate())
 
           liftedApp <- app
-          _ <- ZIO.logInfo("Starting..")
+          _ <- ZIO.logInfo("Starting app....")
           _ <- Server.serve(liftedApp @@ Middleware.debug)
           _ <- ZIO.logInfo("Server running")
         } yield ()
