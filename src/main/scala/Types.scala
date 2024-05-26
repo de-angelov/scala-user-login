@@ -23,6 +23,7 @@ object UserInt {
 opaque type HashedPassword = String
 object HashedPassword {
   def apply (value: String): HashedPassword = value
+  def hash(value: UserPassword): HashedPassword = value
   // given hashedPasswordEncoder: JsonEncoder[HashedPassword] = DeriveJsonEncoder.gen
   // given hashedPasswordDecoder: JsonDecoder[HashedPassword] = DeriveJsonDecoder.gen
 }

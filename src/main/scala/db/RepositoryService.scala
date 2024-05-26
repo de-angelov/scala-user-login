@@ -17,19 +17,32 @@ case class RepositoryService private(quill: Quill.Sqlite[SnakeCase]){
 
 
   type UserQuery = Quoted[Query[User]]
-  private def buildQuery
-    (crq: UserQuery )
-    = crq
+  private def buildQuery(crq: UserQuery) = crq
 
   def saveNewUser
-    (username: String, password: UserPassword) : Task[Option[User]]
-    = ???
+    (username: String, password: UserPassword): Task[Option[Int]]
+    = run {
+      queryUser
+      .insert
+        (_.username -> lift(username)
+        , _.password -> lift(password)
+        )
+      .returningGenerated(_.id)
+    }
+    .option
 
   def getUser
-    (username: String, password: UserPassword) : Option[User]
-    =  ???
+    (username: String, password: UserPassword): Task[Option[User]]
+    = run{
+      queryUser
+      .filter(x => x.username == username && x.password == HashedPassword.hash(password) )
+    }
+    .map{
+        case x :: xs  => Some(x: User)
+        case _ => None
+      }
 
-  def getAllUsers: Task[List[User]] = run(query[User])
+  def getAllUsers: Task[List[User]] = run(queryUser)
 }
 
 object RepositoryService {
