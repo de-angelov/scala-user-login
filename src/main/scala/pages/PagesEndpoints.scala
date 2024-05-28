@@ -14,7 +14,11 @@ case class PagesEndpoints private(config: AppConfig) {
 
     val loginPage = Method.GET / "login" -> handler(renderLoginPage)
 
-    val secretPage = Method.GET / "secret" -> handler(renderSecretPage) @@ bearerAuthWithContext(config.jwtString)
+    val secretPage = Method.GET / "secret" -> handler({
+      (req: Request) =>
+      val username = "todo"
+      renderSecretPage(username)
+    }) @@ bearerAuthWithContext(config.jwtString)
 
     val homePage = Method.GET / "" -> handler(renderHomePage)
 

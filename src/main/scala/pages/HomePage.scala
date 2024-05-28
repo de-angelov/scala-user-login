@@ -4,12 +4,15 @@ import zio._
 import zio.http._
 import zio.http.template._
 
+import userlogin.pages.components.{navbar}
+
 private val headerHtml = head(title("Home Page"))
 
 private val contentHtml
   = div
-  (
-    h1("JUST Home Page")
+  ( navbar("home")
+  , h1("Home sweet home")
+  , p("Lorem")
   )
 
 private val fullHtml =

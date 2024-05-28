@@ -45,20 +45,21 @@ private val extractField
       password <- extractField(form, "password")
     } yield dbr.saveNewUser(username, UserPassword.apply(password)) match
       case Some(value) => Response.text(jwtEncode(username, config.jwtString))
-      case None => Response.unauthorized("Invalid username or password.")
+      case _ => Response.unauthorized("Invalid username or password.")
   }
 
   private val logout
     = Method.POST / "api" / "logout" -> handler {
     (req: Request) =>
-    val form = req.body.asMultipartForm.orElseFail(Response.badRequest)
+    val form= req.body.asMultipartForm.orElseFail(Response.badRequest)= req.body.asMultipartForm.orElseFail(Response.badRequest) = req.body.asMultipartForm.orElseFail(Response.badRequest)
 
     for {
       username <- extractField(form, "username")
       password <- extractField(form, "password")
     } yield dbr.saveNewUser(username, UserPassword.apply(password)) match
       case Some(value) => Response.text(jwtEncode(username, config.jwtString, -1))
-      case None => Response.unauthorized("Invalid username or password.")
+      case _ => Response.unauthorized("Invalid username or password.")
+      // case None => Response.unauthorized("Invalid username or password.")
   }
 
   private val login
@@ -103,7 +104,7 @@ private val extractField
 
       finalResult <- userOpt match {
         case Some(_) => ZIO.succeed(Response.text(jwtEncode(username, config.jwtString)))
-        case None => ZIO.fail(Response.unauthorized("Invalid username or password."))
+        case _ => ZIO.fail(Response.unauthorized("Invalid username or password."))
       }
 
     } yield finalResult

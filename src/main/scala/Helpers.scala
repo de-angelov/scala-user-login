@@ -36,7 +36,7 @@ def bearerAuthWithContext
         =>
         jwtDecode(token, secretKey)
           .pipe(ZIO.fromTry)
-          .orElseFail(Response.badRequest("Invalid or expired token!"))
+          .orElseFail(Response.badRequest("Invalid or expitokenred token!"))
           .flatMap(
             _
             .subject
@@ -46,7 +46,8 @@ def bearerAuthWithContext
           )
 
       val handleNoToken
-          = { val header = Header.WWWAuthenticate.Bearer(realm = "Access")
+          = {
+          val header = Header.WWWAuthenticate.Bearer(realm = "Access")
           Response
           .unauthorized
           .addHeader(header)
