@@ -13,9 +13,9 @@ object DbService {
   private def create
     (config: AppConfig): HikariDataSource
     = {
+      ZIO.log("Setting up DB..." + config.dbConn)
       val poolConfig = new HikariConfig()
       poolConfig.setJdbcUrl(config.dbConn)
-
       new HikariDataSource(poolConfig)
     }
 
