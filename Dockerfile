@@ -11,7 +11,11 @@ COPY src /app/src
 
 # Run the application
 # CMD ["sbt", "run"]
-CMD ["sbt", "~reStart"]
+# CMD ["sbt", "~reStart"]
+
+CMD ["sbt", "clean"]
+CMD ["sbt", "run"]
+
 
 
 

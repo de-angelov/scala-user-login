@@ -12,7 +12,7 @@ import userlogin.pages.secret.renderSecretPage
 
 case class PagesEndpoints private(config: AppConfig) {
 
-    val loginPage = Method.GET / "login" -> handler(renderLoginPage)
+    val loginPage = Method.GET / "login" -> handler(renderLoginPage) @@ Middleware.debug
 
     val secretPage =  Method.GET / "secret"  ->
     Handler

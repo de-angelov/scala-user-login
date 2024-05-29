@@ -6,5 +6,5 @@ FROM sbtscala/scala-sbt:graalvm-community-22.0.0_1.10.0_3.4.2
 RUN curl -fL "https://github.com/coursier/launchers/raw/master/cs-x86_64-pc-linux.gz" | gzip -d > cs
 RUN chmod +x cs
 RUN yes Y | ./cs setup
-RUN cs install bloop --only-prebuilt=true
+# RUN cs install bloop --only-prebuilt=true
 

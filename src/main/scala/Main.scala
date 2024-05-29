@@ -24,9 +24,12 @@ object Main extends ZIOAppDefault {
     : ZIO[Any & (ZIOAppArgs & Scope), Any, Any]
     =
       val port = getEnvVar("HTTP_PORT", 8080)(_.toInt)
-      val dbConn = getEnvVar("POSTGRES_CONNECT_STRING", "")(x => x)
+      val rawDbConn = getEnvVar("POSTGRES_CONNECT_STRING", "")(x => x)
       val dbPool = getEnvVar("POSTGRES_POOL_SIZE", 4)(_.toInt)
       val jwtString = getEnvVar("JWK_STRING", "")(x => x)
+
+      val dbConn = s"jdbc:postgresql://${rawDbConn.replace(" ", "&").replace("host=", "").replace("port=", ":")}"
+
 
       val appConfig = AppConfig( dbPool = dbPool, jwtString=jwtString, dbConn = dbConn)
       val app = ZIO.service[Endpoints].map{_.endpoints.toHttpApp }
@@ -34,11 +37,11 @@ object Main extends ZIOAppDefault {
       val program
         = for {
           _ <- ZIO.service[DbMigrator].map(_.migrate())
-
           liftedApp <- app
           _ <- ZIO.logInfo("Starting app....")
           _ <- Server.serve(liftedApp @@ Middleware.debug)
           _ <- ZIO.logInfo("Server running")
+          _ <- ZIO.never
         } yield ()
 
       program

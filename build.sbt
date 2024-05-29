@@ -10,7 +10,9 @@ val config = Seq(
 val utils = Seq(
   "dev.zio" %% "zio-logging" % zioLoggingVersion,
   "dev.zio" %% "zio-logging-slf4j" % zioLoggingVersion,
-  "com.github.jwt-scala" %% "jwt-core"  % "9.1.1"
+  "com.github.jwt-scala" %% "jwt-core"  % "9.1.1",
+  "org.slf4j" % "slf4j-simple" % "2.0.9" % Runtime
+
 )
 
 val http = Seq(
