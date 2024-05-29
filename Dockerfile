@@ -10,7 +10,8 @@ COPY build.sbt /app/
 COPY src /app/src
 
 # Run the application
-CMD ["sbt", "run"]
+# CMD ["sbt", "run"]
+CMD ["sbt", "~reStart"]
 
 
 

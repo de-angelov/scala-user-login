@@ -16,7 +16,7 @@ private val contentHtml
   )
 
 private val fullHtml =
-       html
+      html
         ( headerHtml
         , body(contentHtml)
         )

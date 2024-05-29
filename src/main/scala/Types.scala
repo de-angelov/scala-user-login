@@ -11,8 +11,14 @@ case class AppConfig
 opaque type UserPassword = String
 object UserPassword {
   def apply (value: String): UserPassword = value
-  given userPasswordEncoder: JsonEncoder[UserPassword] = DeriveJsonEncoder.gen
-  given userPasswordDecoder: JsonDecoder[UserPassword] = DeriveJsonDecoder.gen
+
+  // Encoder
+  given userPasswordEncoder: JsonEncoder[UserPassword] = JsonEncoder[String].contramap[UserPassword](identity)
+  // Decoder
+  given userPasswordDecoder: JsonDecoder[UserPassword] = JsonDecoder[String].map(UserPassword(_))
+
+  // given userPasswordEncoder: JsonEncoder[UserPassword] = DeriveJsonEncoder.gen
+  // given userPasswordDecoder: JsonDecoder[UserPassword] = DeriveJsonDecoder.gen
 }
 
 opaque type UserInt = Long
@@ -23,7 +29,12 @@ object UserInt {
 opaque type HashedPassword = String
 object HashedPassword {
   def apply (value: String): HashedPassword = value
-  def hash(value: UserPassword): HashedPassword = value
+  def hash(value: UserPassword | String): HashedPassword = value
+  def toString(value: HashedPassword): String = value
+    // Encoder
+  given userPasswordEncoder: JsonEncoder[HashedPassword] = JsonEncoder[String].contramap[HashedPassword](x => x)
+  // Decoder
+  given userPasswordDecoder: JsonDecoder[HashedPassword] = JsonDecoder[String].map(HashedPassword.apply)
   // given hashedPasswordEncoder: JsonEncoder[HashedPassword] = DeriveJsonEncoder.gen
   // given hashedPasswordDecoder: JsonDecoder[HashedPassword] = DeriveJsonDecoder.gen
 }

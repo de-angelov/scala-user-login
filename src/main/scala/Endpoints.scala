@@ -21,7 +21,8 @@ case class Endpoints private (
 
   def endpoints
       : Routes[Any, Response]
-      = pages.endpoints ++ api.endpoints  ++ notFound
+      = (pages.endpoints ++ api.endpoints  ++ notFound)
+      .handleErrorCause(_ => Response.text("Page does not exist"))
 }
 
 object Endpoints {
