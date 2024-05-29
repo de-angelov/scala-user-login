@@ -1,6 +1,8 @@
 package userlogin.types
 
 import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
+import zio.json.JsonCodec
+
 
 case class AppConfig
   ( dbConn: String
@@ -13,9 +15,9 @@ object UserPassword {
   def apply (value: String): UserPassword = value
 
   // Encoder
-  given userPasswordEncoder: JsonEncoder[UserPassword] = JsonEncoder[String].contramap[UserPassword](identity)
+  given userPasswordEncoder: JsonEncoder[UserPassword] = JsonEncoder.string.contramap[UserPassword](identity)
   // Decoder
-  given userPasswordDecoder: JsonDecoder[UserPassword] = JsonDecoder[String].map(UserPassword(_))
+  given userPasswordDecoder: JsonDecoder[UserPassword] = JsonDecoder.string.map(UserPassword(_))
 
   // given userPasswordEncoder: JsonEncoder[UserPassword] = DeriveJsonEncoder.gen
   // given userPasswordDecoder: JsonDecoder[UserPassword] = DeriveJsonDecoder.gen
@@ -32,11 +34,11 @@ object HashedPassword {
   def hash(value: UserPassword | String): HashedPassword = value
   def toString(value: HashedPassword): String = value
     // Encoder
-  given userPasswordEncoder: JsonEncoder[HashedPassword] = JsonEncoder[String].contramap[HashedPassword](x => x)
-  // Decoder
-  given userPasswordDecoder: JsonDecoder[HashedPassword] = JsonDecoder[String].map(HashedPassword.apply)
-  // given hashedPasswordEncoder: JsonEncoder[HashedPassword] = DeriveJsonEncoder.gen
-  // given hashedPasswordDecoder: JsonDecoder[HashedPassword] = DeriveJsonDecoder.gen
+  // given userPasswordEncoder: JsonEncoder[HashedPassword] = JsonEncoder.string.contramap[HashedPassword](x => x)
+  // // Decoder
+  // given userPasswordDecoder: JsonDecoder[HashedPassword] = JsonDecoder.string.map(HashedPassword.apply)
+
+  given (using ev: JsonCodec[String]): JsonCodec[HashedPassword] = ev
 }
 
 
