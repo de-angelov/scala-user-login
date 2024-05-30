@@ -67,9 +67,9 @@ private val contentHtml
     ,nameAttr := "password"
     )
   ,input
-    (idAttr := "password"
-    ,typeAttr := "text"
-    ,nameAttr := "password"
+    (onClickAttr := "register()"
+    ,typeAttr := "submit"
+    ,nameAttr := "submit"
     )
   ,script
     (typeAttr := "text/javascript"

@@ -1,6 +1,9 @@
-package userlogin.db
+package userlogin.db.postgress
 
+
+import userlogin.db._
 import userlogin.types.{AppConfig}
+
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.output.MigrateResult
 import zio.{Task, ZIO, ZLayer}

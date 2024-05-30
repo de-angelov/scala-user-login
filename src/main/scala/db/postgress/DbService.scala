@@ -1,4 +1,4 @@
-package userlogin.db
+package userlogin.db.postgress
 
 import userlogin.types.{AppConfig}
 

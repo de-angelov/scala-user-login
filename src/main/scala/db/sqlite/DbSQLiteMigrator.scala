@@ -1,4 +1,8 @@
-package userlogin.db
+package userlogin.db.sqlite
+
+
+import userlogin.db._
+import userlogin.types.{AppConfig}
 
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.output.MigrateErrorResult

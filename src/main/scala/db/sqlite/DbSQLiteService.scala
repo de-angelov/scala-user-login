@@ -1,4 +1,4 @@
-package userlogin.db
+package userlogin.db.sqlite
 
 import userlogin.types.{AppConfig}
 

@@ -3,7 +3,8 @@ package userlogin
 import userlogin.api.{ApiEndpoints}
 import userlogin.pages.{PagesEndpoints}
 import userlogin.endpoints.{Endpoints}
-import userlogin.db.{RepositoryService, DbMigratorT, DbSQLiteService, DbSQLiteMigrator, DbService, DbMigrator}
+import userlogin.db.{RepositoryService, DbMigratorT}
+import userlogin.db.sqlite.{DbSQLiteService, DbSQLiteMigrator}
 import userlogin.types.{AppConfig}
 
 import zio.*
@@ -13,7 +14,7 @@ import zio.logging.backend.SLF4J
 import io.getquill.SqliteJdbcContext
 
 
-val sqlite = "jdbc:sqlite:realworld-prod.sqlite"
+val sqlite = "jdbc:sqlite:zioscala.sqlite"
 val jwt = "#>!IEd!G-L70@OTr$t8E[4.#[A;zo2@{"
 
 private def getEnvVar
