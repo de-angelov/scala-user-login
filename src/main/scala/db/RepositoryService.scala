@@ -6,6 +6,8 @@ import zio.*
 
 import io.getquill.*
 import io.getquill.jdbczio.*
+import io.getquill.context.sql.idiom.SqlIdiom
+import zio.json.SnakeCase
 
 case class UserRow
   ( username: String
@@ -21,15 +23,11 @@ val dbrowToUser
     username = u.username
   )
 
-case class RepositoryService private(quill: Quill.Postgres[SnakeCase]){
+case class RepositoryService private(quill: Quill.Sqlite[SnakeCase] ){
   import quill.*
 
   private inline def queryUser
     = quote(querySchema[UserRow](entity = "users"))
-
-  // def saveNewUser(username: String, password: UserPassword): UIO[Option[User]] = ???
-
-  // def getUser(username: String, password: HashedPassword): UIO[Option[User]] = ???
 
   def saveNewUser
     (username: String, password: UserPassword): UIO[Option[Int]]
@@ -72,5 +70,6 @@ case class RepositoryService private(quill: Quill.Postgres[SnakeCase]){
 }
 
 object RepositoryService {
-  val live = ZLayer.derive[RepositoryService]
+  def live[D <: SqlIdiom]
+  = ZLayer.derive[RepositoryService]
 }

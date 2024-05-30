@@ -19,8 +19,6 @@ object UserPassword {
   // Decoder
   given userPasswordDecoder: JsonDecoder[UserPassword] = JsonDecoder.string.map(UserPassword(_))
 
-  // given userPasswordEncoder: JsonEncoder[UserPassword] = DeriveJsonEncoder.gen
-  // given userPasswordDecoder: JsonDecoder[UserPassword] = DeriveJsonDecoder.gen
 }
 
 opaque type UserInt = Long

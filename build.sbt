@@ -21,6 +21,7 @@ val http = Seq(
 
 val db = Seq(
   "io.getquill" %% "quill-jdbc-zio" % "4.8.4",
+  "org.xerial" % "sqlite-jdbc" % "3.45.3.0",
   "org.postgresql" % "postgresql"  % "42.6.2",
   "org.flywaydb" % "flyway-core" % "10.13.0",
   "com.zaxxer" % "HikariCP" % "5.1.0",

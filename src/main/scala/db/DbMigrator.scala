@@ -1,5 +1,6 @@
 package userlogin.db
 
+import userlogin.types.{AppConfig}
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.output.MigrateResult
 import zio.{Task, ZIO, ZLayer}
@@ -7,13 +8,12 @@ import javax.sql.DataSource
 import scala.util.chaining.scalaUtilChainingOps
 import org.flywaydb.core.api.output.MigrateErrorResult
 
-
-class DbMigrator(ds: DataSource):
+class DbMigrator(ds: DataSource) extends DbMigratorT:
   def migrate
-    (): Task[Unit]
+    : Task[Unit]
     = Flyway
     .configure()
-    .locations("filesystem:./sql")
+    .locations("filesystem:./sql/postgres")
     .dataSource(ds)
     .load()
     .migrate()
@@ -25,10 +25,6 @@ class DbMigrator(ds: DataSource):
         => ZIO.succeed(())
     }
     .onError(cause => ZIO.logErrorCause("Database migration has failed", cause))
-
-case class DbMigrationFailed
-  (msg: String, stackTrace: String)
-  extends RuntimeException(s"$msg\n$stackTrace")
 
 object DbMigrator:
   def live
