@@ -13,9 +13,13 @@ object DbService {
   private def create
     (config: AppConfig): HikariDataSource
     = {
-      ZIO.log("Setting up DB..." + config.dbConn)
       val poolConfig = new HikariConfig()
       poolConfig.setJdbcUrl(config.dbConn)
+      // poolConfig.setUsername("postgres")
+      // poolConfig.setPassword("postgres")
+      poolConfig.setDriverClassName("org.postgresql.Driver")
+      poolConfig.setMaximumPoolSize(config.dbPool)
+
       new HikariDataSource(poolConfig)
     }
 
